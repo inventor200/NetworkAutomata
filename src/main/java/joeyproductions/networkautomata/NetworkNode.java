@@ -55,7 +55,6 @@ public class NetworkNode {
     }
     
     public void collect(ArrayList<NetworkNode> collection) {
-        //collection.clear();
         collection.add(this);
         collectUp(collection);
         collectDown(collection);
@@ -72,7 +71,7 @@ public class NetworkNode {
     
     private void collectDown(ArrayList<NetworkNode> collection) {
         if (patronList == null) return;
-        if (patronList.size() == 0) return;
+        if (patronList.isEmpty()) return;
         ListIterator<NetworkNode> iter = patronList.listIterator();
         while (iter.hasNext()) {
             NetworkNode patron = iter.next();
@@ -80,16 +79,4 @@ public class NetworkNode {
             patron.collectDown(collection);
         }
     }
-    
-    /*public int getNodeX(int canvasWidth) {
-        int centerX = canvasWidth / 2;
-        int posX = ((j - (cols / 2) + 1) * (NetworkPanel.NODE_DIAMETER + NetworkPanel.COL_PADDING)) + centerX;
-        if (cols % 2 == 1) posX -= NetworkPanel.NODE_RADIUS;
-        
-        return posX;
-    }
-    
-    public int getNodeY() {
-        return (i * NetworkPanel.NODE_DIAMETER * NetworkPanel.ROW_MULTIPLIER) + NetworkPanel.NODE_DIAMETER;
-    }*/
 }

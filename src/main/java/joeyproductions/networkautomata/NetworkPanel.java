@@ -6,12 +6,9 @@
 package joeyproductions.networkautomata;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,7 +21,6 @@ import javax.swing.SwingUtilities;
  */
 public class NetworkPanel extends JPanel {
     
-    //public static final int WIRE_THICKNESS = 1;
     public static final int TOP_BOTTOM_PADDING = 32;
     public static final int ROW_PADDING = 128;
     
@@ -98,25 +94,7 @@ public class NetworkPanel extends JPanel {
                     nodePos = source.painter.getCentroid();
                     int lastX = nodePos.x;
                     int lastY = nodePos.y + (NodePainter.NODE_RADIUS / 2);
-                    /*for (int th = WIRE_THICKNESS; th >= 0; th--) {
-                        Color lineColor = source.painter.getColor();
-                        for (int mm = 0; mm < Math.abs(th); mm++) {
-                            lineColor = lineColor.darker();
-                        }
-                        if (!source.state) {
-                            lineColor = lineColor.darker().darker();
-                        }
-                        for (int m = -th; m <= th; m++) {
-                            g2.setColor(lineColor);
-                            for (int n = -th; n <= th; n++) {
-                                g2.drawLine(
-                                        lastX + m,
-                                        lastY + n + NodePainter.NODE_RADIUS,
-                                        posX + m,
-                                        posY + n - NodePainter.NODE_RADIUS);
-                            }
-                        }
-                    }*/
+                    
                     Color lineColor = source.painter.getColor();
                     if (!source.state) {
                         lineColor = lineColor.darker().darker();
@@ -167,21 +145,10 @@ public class NetworkPanel extends JPanel {
     }
     
     public void evaluate() {
-        map.evaluate(map.addInputs());
+        int eval = map.evaluate(map.addInputs());
+        boolean isSolved = !NetworkMap.isEvaluationSafe(eval);
+        if (isSolved) {
+            MainWindow.SINGLETON.showCongrats();
+        }
     }
-    
-    /*@Override
-    public Dimension getMinimumSize() {
-        return getCanvasSize();
-    }
-    
-    @Override
-    public Dimension getPreferredSize() {
-        return getCanvasSize();
-    }
-    
-    @Override
-    public Dimension getMaximumSize() {
-        return getCanvasSize();
-    }*/
 }

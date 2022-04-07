@@ -24,8 +24,9 @@ public class NetworkMap {
     public static final int MAX_COL_COUNT = START_COL_COUNT * 2;
     
     public ArrayList<NetworkNode>[] network;
+    private int cachedVulnerabilityCount = 0;
     
-    public NetworkMap(int seed) {
+    public NetworkMap(long seed) {
         Random rand = new Random(seed);
         
         int rowCount = rand.nextInt(MAX_ROW_COUNT - MIN_ROW_COUNT) + MIN_ROW_COUNT;
@@ -164,7 +165,14 @@ public class NetworkMap {
             if (!isEvaluationSafe(evaluate(i))) count++;
         }
         
+        cachedVulnerabilityCount = count;
+        
         return count;
+    }
+    
+    // Efficiently returns the count without disturbing the inputs.
+    public int getCachedVulnerabilityCount() {
+        return cachedVulnerabilityCount;
     }
     
     public int getOutputCount() {
@@ -233,5 +241,24 @@ public class NetworkMap {
     
     public static boolean isEvaluationSafe(int evaluation) {
         return evaluation % 2 == 0;
+    }
+    
+    public boolean isSolved() {
+        int eval = evaluate(addInputs());
+        return !isEvaluationSafe(eval);
+    }
+    
+    public String solutionToString() {
+        for (int i = 0; i < MAX_INPUT + 1; i++) {
+            if (!isEvaluationSafe(evaluate(i))) {
+                String str = "Solution:";
+                for (int j = 0; j < START_COL_COUNT; j++) {
+                    str += network[0].get(j).state ? " 1" : " 0";
+                }
+                return str;
+            }
+        }
+        
+        return "No solution";
     }
 }

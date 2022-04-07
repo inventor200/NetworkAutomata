@@ -11,10 +11,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
@@ -27,7 +25,7 @@ public class NodePainter extends JComponent implements MouseListener {
     public static final int NODE_RADIUS = 24;
     public static final int NODE_DIAMETER = NODE_RADIUS * 2;
     public static final int BIT_FONT_SIZE = NODE_RADIUS / 2;
-    public static final Font BIT_FONT = new Font(Font.MONOSPACED, Font.BOLD, BIT_FONT_SIZE);
+    public static final Font BIT_FONT = new Font(Font.MONOSPACED, Font.PLAIN, BIT_FONT_SIZE);
     public static final Color[] PALETTE = {
         Color.RED, Color.YELLOW, Color.CYAN, Color.WHITE
     };
@@ -35,9 +33,6 @@ public class NodePainter extends JComponent implements MouseListener {
     public static final Color INVERSION_COLOR = Color.BLACK;
     
     public NetworkNode data;
-    private BufferedImage brightNodeIcon;
-    private BufferedImage normalNodeIcon;
-    private BufferedImage darkNodeIcon;
     private final NetworkPanel parentPanel;
     private final NetworkPanelColumn column;
     private boolean hasHover = false;
@@ -101,9 +96,6 @@ public class NodePainter extends JComponent implements MouseListener {
         if (data.isEndNode && data.bitIndex == 0) {
             product.color = Color.RED;
         }
-        /*product.brightNodeIcon = paintIcon(product.color, data, 1);
-        product.normalNodeIcon = paintIcon(product.color, data, 0);
-        product.darkNodeIcon = paintIcon(product.color, data, -1);*/
         
         return product;
     }
@@ -127,70 +119,11 @@ public class NodePainter extends JComponent implements MouseListener {
         return color;
     }
     
-    /*public static BufferedImage paintIcon(Color nodeColor, NetworkNode data, int tintOrShade) {
-        BufferedImage img = new BufferedImage(NODE_DIAMETER, NODE_DIAMETER, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = (Graphics2D)img.getGraphics();
-        int gradWidth = NetworkPanel.WIRE_THICKNESS + 1;
-        
-        Color chosenColor = nodeColor;
-        if (tintOrShade > 0) {
-            chosenColor = mixColors(chosenColor, Color.WHITE);
-        }
-        else if (tintOrShade < 0) {
-            chosenColor = mixColors(chosenColor, Color.BLACK);
-        }
-        
-        for (int th = gradWidth; th >= 0; th--) {
-            Color adjNodeColor = chosenColor;
-            for (int mm = 0; mm < Math.abs(th); mm++) {
-                adjNodeColor = adjNodeColor.darker();
-            }
-            g2.setColor(adjNodeColor);
-            int offset = gradWidth - th;
-            g2.fillOval(offset, offset,
-                    NODE_DIAMETER - (offset * 2), NODE_DIAMETER - (offset * 2));
-        }
-
-        int halfRadius = NODE_RADIUS / 2;
-
-        if (data.isInverted) {
-            for (int th = gradWidth; th >= 0; th--) {
-                Color adjNodeColor = chosenColor;
-                for (int mm = 0; mm < Math.abs(gradWidth - th); mm++) {
-                    adjNodeColor = adjNodeColor.darker();
-                }
-                g2.setColor(adjNodeColor);
-                int offset = th;
-                g2.fillOval(halfRadius - offset, halfRadius - offset,
-                        NODE_RADIUS + (offset * 2), NODE_RADIUS + (offset * 2));
-            }
-
-            g2.setColor(INVERSION_COLOR);
-            g2.fillOval(halfRadius, halfRadius, NODE_RADIUS, NODE_RADIUS);
-        }
-
-        if (data.isEndNode) {
-            g2.setFont(BIT_FONT);
-            g2.setColor(tintOrShade > 0 ? Color.DARK_GRAY : Color.BLACK);
-            g2.drawString("" + data.bitIndex,
-                    NODE_RADIUS - (BIT_FONT_SIZE / 4),
-                    NODE_RADIUS + (BIT_FONT_SIZE / 2));
-        }
-        
-        return img;
-    }*/
-    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         int tintOrShade = hasHover ? 1 : (data.state ? 0 : -1);
-        /*BufferedImage icon = normalNodeIcon;
-        if (tintOrShade > 0) {
-            icon = brightNodeIcon;
-        }
-        else if (tintOrShade < 0) {
-            icon = darkNodeIcon;
-        }*/
+        
         Graphics2D g2 = (Graphics2D)g;
         g2.setColor(getTintOrShade(tintOrShade));
         
@@ -220,7 +153,6 @@ public class NodePainter extends JComponent implements MouseListener {
                     NODE_RADIUS + (BIT_FONT_SIZE / 2));
         }
         
-        //g2.drawImage(icon, null, 0, 0);
         if (parentPanel.getLockNode() == data) {
             g2.setColor(Color.WHITE);
             g2.drawRect(1, 1, NODE_DIAMETER - 2, NODE_DIAMETER - 2);
